@@ -1,0 +1,87 @@
+
+
+.line-top {
+   fill: none;
+  //stroke: #E040FB;
+  //stroke-width: 2px;
+}
+
+.area-top {
+ stroke: "transparent";
+ //stroke-width: 2px;
+}
+
+.line-bottom {
+  // fill: none;
+  stroke: #7D4DFF;
+  stroke-width: 2px;
+}
+
+label-top {
+
+  color: #E040FB;
+  font-size: small;
+}
+
+.data {
+  stroke-width: 2px;
+}
+
+.average-50 {
+  stroke: #0ff;
+}
+
+.average-25 {
+  stroke: #ff0;
+}
+
+.wrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  &--light{
+    background: #fff;
+    text {
+      fill: #333;
+    }
+    
+    .axisY line{
+      stroke: #aaa;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #aaa;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis path {
+      stroke: #aaa;
+    }
+  }
+  &--dark{
+    background-color: #333;
+    text {
+      fill: #fff;
+    }
+    
+    .axisY line{
+      stroke: #333;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #333;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis path {
+      stroke: #444;
+    }
+  }
+}
+
+
+.tooltip {
+  position: relative;
+}
