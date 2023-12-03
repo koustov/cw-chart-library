@@ -1,0 +1,65 @@
+.line-top {
+  fill: none;
+}
+.area-top {
+  stroke: "transparent";
+}
+.line-bottom {
+  stroke: #7d4dff;
+  stroke-width: 2px;
+}
+label-top {
+  color: #e040fb;
+  font-size: small;
+}
+.data {
+  stroke-width: 2px;
+}
+.average-50 {
+  stroke: #0ff;
+}
+.average-25 {
+  stroke: #ff0;
+}
+.wrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.wrapper--light {
+  background: #fff;
+}
+.wrapper--light text {
+  fill: #333;
+}
+.wrapper--light .axisY line {
+  stroke: #aaa;
+}
+.wrapper--light .axis path, .wrapper--light .axis line {
+  fill: none;
+  stroke: #aaa;
+  shape-rendering: crispEdges;
+}
+.wrapper--light .axis path {
+  stroke: #aaa;
+}
+.wrapper--dark {
+  background-color: #333;
+}
+.wrapper--dark text {
+  fill: #fff;
+}
+.wrapper--dark .axisY line {
+  stroke: #333;
+}
+.wrapper--dark .axis path, .wrapper--dark .axis line {
+  fill: none;
+  stroke: #333;
+  shape-rendering: crispEdges;
+}
+.wrapper--dark .axis path {
+  stroke: #444;
+}
+.tooltip {
+  position: relative;
+}

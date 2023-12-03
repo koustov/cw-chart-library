@@ -1,9 +1,9 @@
 export const createSvg = (
   d3: any,
   id: string,
-  x: d3.ScaleTime<number, number, never>,
+  x: d3.ScaleLinear<number, number, never>,
   y: d3.ScaleLinear<number, number, never>,
-  _title: string,
+  title: string,
   chartWidth: number,
   chartHeight: number,
   isTop = false,
@@ -12,7 +12,7 @@ export const createSvg = (
     .select(`#${id}`)
     .append('svg')
     .attr('width', chartWidth)
-    .attr('height', chartHeight + 50)
+    .attr('height', chartHeight)
     .append('g')
     .attr('transform', 'translate(30, 20)')
 
@@ -26,7 +26,7 @@ export const createSvg = (
 
   const xAxis = svg
     .append('g')
-    .attr('transform', `translate(0,${chartHeight})`)
+    .attr('transform', `translate(0,${chartHeight - 40})`)
     .call(
       d3
         .axisBottom(x)
@@ -37,19 +37,19 @@ export const createSvg = (
         .tickPadding(10),
     )
 
-  // .selectAll("text")
-  // .attr("transform", "translate(-10,0)")
+    .selectAll('text')
+    .attr('transform', 'translate(-10,0)')
 
-  // .style("text-anchor", "end");
+    .style('text-anchor', 'end')
 
-  // svg
-  //   .append("text")
-  //   .attr("x", -30)
-  //   .attr("y", -20)
-  //   .attr("text-anchor", "left")
-  //   .attr("stroke", "#616D7Cs")
-  //   .style("font-size", "16px")
-  //   .style("z-index", 999)
-  //   .text(title);
+  svg
+    .append('text')
+    .attr('x', -30)
+    .attr('y', -5)
+    .attr('text-anchor', 'left')
+    .attr('stroke', '#616D7Cs')
+    .style('font-size', '16px')
+    .style('z-index', 999)
+    .text(title)
   return { svg, xAxis, yAxis }
 }

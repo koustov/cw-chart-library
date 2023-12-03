@@ -7,8 +7,8 @@ type Color = RGB | RGBA | HEX
 export const ColorPalette: Color[] = [
   '#E040FB',
   '#7D4DFF',
-  '#E040FB',
-  '#7D4DFF',
+  '#ef510b',
+  '#fac227',
   '#E040FB',
   '#7D4DFF',
   '#E040FB',

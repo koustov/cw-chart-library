@@ -17,7 +17,7 @@ export const createTooltip = (d3: any, svg: any) => {
     tooltip_rect
       .style('left', d3.pointer(d)[0])
       .style('top', d3.pointer(d)[1])
-      .style('opacity', 0.9)
+      .style('opacity', 1)
       .transition()
       .duration(100)
   })

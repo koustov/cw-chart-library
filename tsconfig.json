@@ -1,8 +1,9 @@
 {
-    "include": ["src"],
+    "include": ["src", "stories"],
     "exclude": [
       "dist",
-      "node_modules"
+      "node_modules",
+      "src/stories/archive"
     ],
     "compilerOptions": {
       "module": "esnext",
@@ -22,5 +23,7 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
+      "plugins": [{ "name": "typescript-plugin-css-modules" }]
+
     }
   }

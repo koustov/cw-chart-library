@@ -1,5 +1,6 @@
 import * as d3Core from 'd3'
 import { ChartProps } from './MultiVariantChartProps'
+import { Theme } from '../../services/theme'
 
 export const chartUpdate = (
   index: number,
@@ -17,7 +18,7 @@ export const chartUpdate = (
   chartResources: any,
   interval: number,
   isTop: boolean,
-  _xScale: d3.ScaleTime<number, number, never>,
+  _xScale: d3.ScaleLinear<number, number, never>,
   // eslint-disable-next-line  @typescript-eslint/no-unused-vars
   yScale: d3.ScaleLinear<number, number, never>,
   area: any,
@@ -25,6 +26,7 @@ export const chartUpdate = (
   _xaxis: any,
   // eslint-disable-next-line  @typescript-eslint/no-unused-vars
   _yaxis: any,
+  theme: Theme,
 ) => {
   let lineVertical, circle, textLabel, textValue
   const svgWidth = chartWidth - 100
@@ -79,7 +81,7 @@ export const chartUpdate = (
         .attr('r', 6)
         .attr('stroke', chartOptions.lineColor)
         .attr('stroke-width', '3px')
-        .attr('fill', '#555')
+        .attr('fill', theme === Theme.Dark ? '#aaa' : '#fff')
     }
 
     const labelLocation = {

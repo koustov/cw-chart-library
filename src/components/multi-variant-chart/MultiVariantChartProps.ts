@@ -99,8 +99,8 @@ export type IMultiVariantChartProps = {
   xAxisPointLimit?: number
   theme: Theme
   margin?: Margin
-  interval: number
-  headsup: number
+  interval?: number
+  headsup?: number
 }
 
 export interface ChartProps {

@@ -8,9 +8,11 @@
   "devDependencies": {
     "@types/react": "^18.2.40",
     "@types/react-dom": "^18.2.17",
-    "cw-chart-library": "^0.1.4",
+    "cw-chart-library": "^0.1.5",
     "parcel": "^2.10.3",
+    "process": "^0.11.10",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-script": "^2.0.5"
   }
 }

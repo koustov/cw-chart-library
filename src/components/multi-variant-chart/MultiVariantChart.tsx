@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-// import './MultiVariantChart.scss'
+//import styles from 'MultiVariantChart.cs'
 import * as d3 from 'd3'
 import { IMultiVariantChartProps, MultiVariantChartData, MultiVariantChartProps } from './MultiVariantChartProps'
 import { uuid4 } from '../../services/uuid'
@@ -13,16 +13,14 @@ import { createOverlay } from './createOverlay'
 const MultiVariantChart = (props: IMultiVariantChartProps) => {
   const mv_chart = MultiVariantChartProps.getInstance(props)
   const { id, variantCount, charts, height, width, ticks, onTick, interval, stop, theme } = mv_chart
+  const in_height = height
+  const in_width = width
 
+  const chartWidth = in_width - 100
+  const chartHeight = in_height / variantCount
+  const individualChartHeight = chartHeight - 20
+  const chartId = id || uuid4()
   useEffect(() => {
-    const chartId = id || uuid4()
-
-    const in_height = height
-    const in_width = width
-
-    const chartWidth = in_width - 100
-    const chartHeight = in_height / 2 - 50
-
     // time is parameter to track all xAxis movement
     let time = 0
     const num = ticks
@@ -31,7 +29,7 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
     const latestData: number[][] = Array.from(new Array(variantCount), () => [])
     const data: number[][] = Array.from(new Array(variantCount), () => [])
 
-    const xScales: d3.ScaleTime<number, number, never>[] = []
+    const xScales: d3.ScaleLinear<number, number, never>[] = []
     const yScales: d3.ScaleLinear<number, number, never>[] = []
     const svgs: any[] = []
     const lines: d3.Line<[number, number]>[] = []
@@ -45,7 +43,7 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
     for (let i = 0; i < variantCount; i++) {
       xScales.push(
         d3
-          .scaleTime()
+          .scaleLinear()
           .range([0, chartWidth - 100])
           .domain([Date.now(), Date.now() + interval * ticks]),
       )
@@ -54,12 +52,12 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
 
       const chartData = createSvg(
         d3,
-        `${chartId}mvchart`,
+        `${chartId}_mvchart_${i}`,
         xScales[i],
         yScales[i],
         charts[i].label,
         chartWidth,
-        chartHeight,
+        individualChartHeight,
         i !== variantCount - 1,
       )
 
@@ -73,7 +71,7 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
           // eslint-disable-next-line  @typescript-eslint/no-unused-vars
           .x((_d, ind) => xScales[i](ind + time - num))
           // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-          .y((_d) => yScales[i](height))
+          .y((_d) => yScales[i](chartHeight))
           .curve(d3.curveNatural),
       )
       areas.push(
@@ -81,20 +79,20 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
           .area()
           // eslint-disable-next-line  @typescript-eslint/no-unused-vars
           .x((_d, ind) => xScales[i](ind + time - num))
-          .y0(height)
+          .y0(chartHeight)
           // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-          .y1((_d) => yScales[i](height)),
+          .y1((_d) => yScales[i](chartHeight)),
       )
       const path = svgs[i]
         .append('path')
-        .attr('class', 'line-top data')
+        .style('fill', 'none')
         .style('stroke', charts[i].lineColor)
         .style('stroke-width', '2px')
       path.transition().duration(interval).ease(d3.easeLinear)
 
       const patharea = svgs[i]
         .append('path')
-        .attr('class', 'area-top data')
+        //.attr('class', 'area-top data')
         .attr('fill', `url(#gradient_${i})`)
         .style('stroke-width', '2px')
       patharea.transition().duration(interval).ease(d3.easeLinear)
@@ -112,7 +110,7 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
         .data([
           {
             offset: '0%',
-            color: charts[i].lineColor,
+            color: 'transparent',
           },
           {
             offset: '10%',
@@ -160,12 +158,12 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
       stopMoving = false
     }
 
-    createOverlay(d3, 'chart-overlay', width, height, onMouseEnter, onMouseExit)
+    createOverlay(d3, 'chart-overlay', height, width, height, onMouseEnter, onMouseExit)
 
     function tick() {
       if (!stop) {
         time++
-        onTick().then((res: MultiVariantChartData[]) => {
+        onTick(variantCount).then((res: MultiVariantChartData[]) => {
           const currentData: MultiVariantChartData[] = res
 
           for (let i = 0; i < variantCount; i++) {
@@ -208,8 +206,12 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
             areas[i],
             xAxises[i],
             yAxises[i],
+            theme,
           )
-          if (chartResources.length < 2) {
+
+          if (chartResources.length <= variantCount) {
+            chartResources.push(resource)
+          } else if (chartResources.length < 2) {
             chartResources[i] = resource
           }
 
@@ -225,10 +227,10 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
           }
 
           // Working
-          // xScales[i].domain([time - num, time]);
+          xScales[i].domain([time - num, time])
           const yDomTop = d3.extent(latestData[i])
-          if (yDomTop[1]) {
-            yScales[i].domain([yDomTop[0], yDomTop[1]])
+          if (yDomTop[1] && yScales[i].domain()[1] !== yDomTop[1]) {
+            yScales[i].domain([0, yDomTop[1]])
             yScales[i].ticks(2)
             yAxises[i]
               .transition()
@@ -239,10 +241,12 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
               .call(d3.axisLeft(yScales[i]))
           }
 
-          yAxises[i]
-            .call(d3.axisLeft(yScales[i]).tickSizeInner(-chartWidth).tickSizeOuter(0).tickPadding(10))
-            .attr('stroke-dasharray', '2 2')
-            .attr('class', 'axisY')
+          if (yAxises[i]) {
+            yAxises[i]
+              .call(d3.axisLeft(yScales[i]).tickSizeInner(-chartWidth).tickSizeOuter(0))
+              .attr('stroke-dasharray', '2 2')
+              .style('stroke', '#aaa')
+          }
           // yScales[i].call($data[i], lines[i].y);
           // const transitionPath = d3.transition().ease(d3.easeSin).duration(1000);
           // svgs[i]
@@ -272,26 +276,13 @@ const MultiVariantChart = (props: IMultiVariantChartProps) => {
       <div
         id='chart-overlay'
         style={{
-          position: 'absolute',
-          height: `${height}px`,
+          position: 'fixed',
+          height: `${chartHeight * variantCount}px`,
           width: `${width}px`,
         }}
       ></div>
       {Array.from(new Array(variantCount), (_val, index) => index).map((_ch, i) => {
-        return (
-          <div key={i} style={{ display: 'flex', flexDirection: 'column' }}>
-            <div
-              style={{
-                fontFamily: 'Mona Sans',
-                color: '#red',
-                height: '20px',
-              }}
-            >
-              {charts[i].label}
-            </div>
-            <div id={`${id}mvchart`} style={{ height: height }}></div>
-          </div>
-        )
+        return <div id={`${chartId}_mvchart_${i}`} style={{ height: chartHeight }}></div>
       })}
 
       {/* <div>
